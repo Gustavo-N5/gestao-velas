@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:gestao_velas/ds/tokens/foundations.dart';
+import 'package:gestao_velas/ds/tokens/ds_foundations.dart';
 
-class AppColors extends ThemeExtension<AppColors> {
+class DsAppColors extends ThemeExtension<DsAppColors> {
   // Static
   final Color staticBlack;
   final Color staticWhite;
@@ -106,7 +106,7 @@ class AppColors extends ThemeExtension<AppColors> {
   final Color neutralSoft;
   final Color neutralStrong;
 
-  const AppColors({
+  const DsAppColors({
     required this.staticBlack,
     required this.staticWhite,
     required this.bgStrong950,
@@ -177,7 +177,7 @@ class AppColors extends ThemeExtension<AppColors> {
     required this.neutralStrong,
   });
 
-  static final light = AppColors(
+  static final light = DsAppColors(
     // Static
     staticBlack: DSFoundations.neutralGrey950,
     staticWhite: DSFoundations.neutralGrey0,
@@ -283,7 +283,7 @@ class AppColors extends ThemeExtension<AppColors> {
     neutralStrong: DSFoundations.alphaBlack16,
   );
 
-  static final dark = AppColors(
+  static final dark = DsAppColors(
     // Static
     staticBlack: DSFoundations.neutralGrey950,
     staticWhite: DSFoundations.neutralGrey0,
@@ -390,11 +390,11 @@ class AppColors extends ThemeExtension<AppColors> {
   );
 
   @override
-  AppColors copyWith() => this;
+  DsAppColors copyWith() => this;
 
   @override
-  AppColors lerp(ThemeExtension<AppColors>? other, double t) {
-    if (other is! AppColors) return this;
+  DsAppColors lerp(ThemeExtension<DsAppColors>? other, double t) {
+    if (other is! DsAppColors) return this;
     return this;
   }
 }

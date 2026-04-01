@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../tokens/foundations.dart';
-import '../tokens/app_colors.dart';
+import '../tokens/ds_foundations.dart';
+import '../tokens/ds_app_colors.dart';
 
 class DsTheme {
   const DsTheme._();
@@ -10,7 +10,7 @@ class DsTheme {
     required TextTheme textTheme,
     required Color primaryColor,
   }) => _build(
-    colors: AppColors.light,
+    colors: DsAppColors.light,
     brightness: Brightness.light,
     textTheme: textTheme,
     primaryColor: primaryColor,
@@ -20,14 +20,14 @@ class DsTheme {
     required TextTheme textTheme,
     required Color primaryColor,
   }) => _build(
-    colors: AppColors.dark,
+    colors: DsAppColors.dark,
     brightness: Brightness.dark,
     textTheme: textTheme,
     primaryColor: primaryColor,
   );
 
   static ThemeData _build({
-    required AppColors colors,
+    required DsAppColors colors,
     required Brightness brightness,
     required TextTheme textTheme,
     required Color primaryColor,
