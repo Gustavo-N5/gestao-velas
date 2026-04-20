@@ -106,6 +106,9 @@ class DsAppColors extends ThemeExtension<DsAppColors> {
   final Color neutralSoft;
   final Color neutralStrong;
 
+  // Theme
+  final Color themeBlueBase;
+
   const DsAppColors({
     required this.staticBlack,
     required this.staticWhite,
@@ -175,6 +178,7 @@ class DsAppColors extends ThemeExtension<DsAppColors> {
     required this.overlayWhite0,
     required this.neutralSoft,
     required this.neutralStrong,
+    required this.themeBlueBase,
   });
 
   static final light = DsAppColors(
@@ -281,6 +285,7 @@ class DsAppColors extends ThemeExtension<DsAppColors> {
     // Neutral
     neutralSoft: DSFoundations.alphaBlack4,
     neutralStrong: DSFoundations.alphaBlack16,
+    themeBlueBase: DSFoundations.blue500,
   );
 
   static final dark = DsAppColors(
@@ -387,6 +392,8 @@ class DsAppColors extends ThemeExtension<DsAppColors> {
     // Neutral
     neutralSoft: DSFoundations.alphaWhite4,
     neutralStrong: DSFoundations.alphaWhite16,
+
+    themeBlueBase: DSFoundations.blue500,
   );
 
   @override
