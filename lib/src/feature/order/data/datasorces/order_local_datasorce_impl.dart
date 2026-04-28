@@ -40,10 +40,10 @@ class OrderLocalDatasorceImpl implements OrderLocalDatasorce {
   }
 
   @override
-  Future<void> delete(OrderModel model) async {
+  Future<void> delete(String id) async {
     try {
       final box = await _box;
-      await box.delete(model.id);
+      await box.delete(id);
     } catch (e) {
       throw CacheException('Erro ao deletar pedido: $e');
     }
