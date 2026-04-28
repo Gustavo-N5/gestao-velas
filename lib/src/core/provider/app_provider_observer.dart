@@ -1,4 +1,3 @@
-// lib/src/core/app_provider_observer.dart
 import 'package:gestao_velas/src/core/toast/toast_service.dart';
 import 'package:gestao_velas/src/core/error/failures.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
