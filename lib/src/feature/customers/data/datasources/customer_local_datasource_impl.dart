@@ -48,4 +48,14 @@ class CustomerLocalDatasourceImpl implements CustomerLocalDatasource {
       throw CacheException('Erro ao deletar cliente: $e');
     }
   }
+
+  @override
+  Future<void> update(CustomerModel model) {
+    try {
+      final box = _box;
+      return box.then((b) => b.put(model.id, model));
+    } catch (e) {
+      throw CacheException('Erro ao atualizar cliente: $e');
+    }
+  }
 }

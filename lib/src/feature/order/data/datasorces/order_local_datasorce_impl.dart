@@ -48,4 +48,14 @@ class OrderLocalDatasorceImpl implements OrderLocalDatasorce {
       throw CacheException('Erro ao deletar pedido: $e');
     }
   }
+
+  @override
+  Future<void> update(OrderModel model) async {
+    try {
+      final box = await _box;
+      await box.put(model.id, model);
+    } catch (e) {
+      throw CacheException('Erro ao atualizar cliente: $e');
+    }
+  }
 }

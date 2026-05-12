@@ -5,4 +5,5 @@ abstract class CustomerLocalDatasource {
   Future<CustomerModel?> getById(String id);
   Future<void> save(CustomerModel model);
   Future<void> delete(String id);
+  Future<void> update(CustomerModel model);
 }

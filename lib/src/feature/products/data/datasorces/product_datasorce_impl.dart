@@ -48,4 +48,14 @@ class ProductDatasorceImpl implements ProductDatasorce {
       throw CacheException('Erro ao deletar pedido: $e');
     }
   }
+
+  @override
+  Future<void> update(ProductModel model) async {
+    try {
+      final box = await _box;
+      await box.put(model.id, model);
+    } catch (e) {
+      throw CacheException('Erro ao atualizar cliente: $e');
+    }
+  }
 }

@@ -5,4 +5,5 @@ abstract class OrderLocalDatasorce {
   Future<OrderModel?> getById(String id);
   Future<void> save(OrderModel model);
   Future<void> delete(String id);
+  Future<void> update(OrderModel model);
 }

@@ -5,4 +5,5 @@ abstract class ProductDatasorce {
   Future<ProductModel?> getById(String id);
   Future<void> save(ProductModel model);
   Future<void> delete(String id);
+  Future<void> update(ProductModel model);
 }

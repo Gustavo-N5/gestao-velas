@@ -57,3 +57,5 @@ ios/Runner/GoogleService-Info.plist
 # Environment
 .env
 .env.*
+
+CLAUDE.md
