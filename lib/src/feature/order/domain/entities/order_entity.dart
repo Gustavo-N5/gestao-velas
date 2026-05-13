@@ -29,6 +29,22 @@ class OrderEntity extends Equatable {
 
   double get totalValue => items.fold(0, (sum, item) => sum + item.subtotal);
 
+  OrderEntity copyWith({
+    OrderStatus? status,
+    PaymentStatus? paymentStatus,
+    DateTime? deliveryDate,
+    String? notes,
+  }) => OrderEntity(
+    id: id,
+    customer: customer,
+    items: items,
+    status: status ?? this.status,
+    paymentStatus: paymentStatus ?? this.paymentStatus,
+    createdAt: createdAt,
+    deliveryDate: deliveryDate ?? this.deliveryDate,
+    notes: notes ?? this.notes,
+  );
+
   @override
   List<Object?> get props => [
     id,

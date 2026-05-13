@@ -59,3 +59,4 @@ ios/Runner/GoogleService-Info.plist
 .env.*
 
 CLAUDE.md
+.claude/

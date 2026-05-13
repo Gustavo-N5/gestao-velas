@@ -1,7 +1,7 @@
-import 'package:gestao_velas/src/feature/customers/data/models/customer_model.g.dart';
-import 'package:gestao_velas/src/feature/order/data/models/order_item_model.g.dart';
-import 'package:gestao_velas/src/feature/products/data/models/product_model.g.dart';
-import 'package:gestao_velas/src/feature/order/data/models/order_model.g.dart';
+import 'package:gestao_velas/src/feature/customers/data/models/customer_model_adapter.dart';
+import 'package:gestao_velas/src/feature/order/data/models/order_item_model_adapter.dart';
+import 'package:gestao_velas/src/feature/products/data/models/product_model_adapter.dart';
+import 'package:gestao_velas/src/feature/order/data/models/order_model_adapter.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class HiveDatabase {
