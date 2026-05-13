@@ -1,11 +1,11 @@
-import 'package:gestao_velas/src/feature/products/domain/datasorces/product_datasorce.dart';
+import 'package:gestao_velas/src/feature/products/domain/datasources/product_datasource.dart';
 import 'package:gestao_velas/src/feature/products/data/models/product_model.dart';
 import 'package:gestao_velas/src/core/database/hive_database.dart';
 import 'package:gestao_velas/src/core/database/hive_boxes.dart';
 import 'package:gestao_velas/src/core/error/exceptions.dart';
 import 'package:hive/hive.dart';
 
-class ProductDatasorceImpl implements ProductDatasorce {
+class ProductDatasourceImpl implements ProductDatasource {
   Future<Box<ProductModel>> get _box =>
       HiveDatabase.openBox<ProductModel>(HiveBoxes.products);
 
@@ -15,7 +15,7 @@ class ProductDatasorceImpl implements ProductDatasorce {
       final box = await _box;
       return box.values.toList();
     } catch (e) {
-      throw CacheException('Erro ao buscar clientes: $e');
+      throw CacheException('Erro ao buscar produtos: $e');
     }
   }
 
@@ -25,7 +25,7 @@ class ProductDatasorceImpl implements ProductDatasorce {
       final box = await _box;
       return box.get(id);
     } catch (e) {
-      throw CacheException('Erro ao buscar cliente: $e');
+      throw CacheException('Erro ao buscar produto: $e');
     }
   }
 
@@ -35,7 +35,7 @@ class ProductDatasorceImpl implements ProductDatasorce {
       final box = await _box;
       await box.put(model.id, model);
     } catch (e) {
-      throw CacheException('Erro ao salvar cliente: $e');
+      throw CacheException('Erro ao salvar produto: $e');
     }
   }
 
@@ -45,7 +45,7 @@ class ProductDatasorceImpl implements ProductDatasorce {
       final box = await _box;
       await box.delete(id);
     } catch (e) {
-      throw CacheException('Erro ao deletar pedido: $e');
+      throw CacheException('Erro ao deletar produto: $e');
     }
   }
 
@@ -55,7 +55,7 @@ class ProductDatasorceImpl implements ProductDatasorce {
       final box = await _box;
       await box.put(model.id, model);
     } catch (e) {
-      throw CacheException('Erro ao atualizar cliente: $e');
+      throw CacheException('Erro ao atualizar produto: $e');
     }
   }
 }

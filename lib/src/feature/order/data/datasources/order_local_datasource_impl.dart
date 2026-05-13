@@ -1,11 +1,11 @@
-import 'package:gestao_velas/src/feature/order/domain/datasorces/order_local_datasorce.dart';
+import 'package:gestao_velas/src/feature/order/domain/datasources/order_local_datasource.dart';
 import 'package:gestao_velas/src/feature/order/data/models/order_model.dart';
 import 'package:gestao_velas/src/core/database/hive_database.dart';
 import 'package:gestao_velas/src/core/database/hive_boxes.dart';
 import 'package:gestao_velas/src/core/error/exceptions.dart';
 import 'package:hive/hive.dart';
 
-class OrderLocalDatasorceImpl implements OrderLocalDatasorce {
+class OrderLocalDatasourceImpl implements OrderLocalDatasource {
   Future<Box<OrderModel>> get _box =>
       HiveDatabase.openBox<OrderModel>(HiveBoxes.orders);
 
@@ -15,7 +15,7 @@ class OrderLocalDatasorceImpl implements OrderLocalDatasorce {
       final box = await _box;
       return box.values.toList();
     } catch (e) {
-      throw CacheException('Erro ao buscar clientes: $e');
+      throw CacheException('Erro ao buscar pedidos: $e');
     }
   }
 
@@ -25,7 +25,7 @@ class OrderLocalDatasorceImpl implements OrderLocalDatasorce {
       final box = await _box;
       return box.get(id);
     } catch (e) {
-      throw CacheException('Erro ao buscar cliente: $e');
+      throw CacheException('Erro ao buscar pedido: $e');
     }
   }
 
@@ -35,7 +35,7 @@ class OrderLocalDatasorceImpl implements OrderLocalDatasorce {
       final box = await _box;
       await box.put(model.id, model);
     } catch (e) {
-      throw CacheException('Erro ao salvar cliente: $e');
+      throw CacheException('Erro ao salvar pedido: $e');
     }
   }
 
@@ -55,7 +55,7 @@ class OrderLocalDatasorceImpl implements OrderLocalDatasorce {
       final box = await _box;
       await box.put(model.id, model);
     } catch (e) {
-      throw CacheException('Erro ao atualizar cliente: $e');
+      throw CacheException('Erro ao atualizar pedido: $e');
     }
   }
 }

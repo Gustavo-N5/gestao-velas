@@ -1,6 +1,6 @@
 import 'package:gestao_velas/src/feature/order/data/models/order_model.dart';
 
-abstract class OrderLocalDatasorce {
+abstract class OrderLocalDatasource {
   Future<List<OrderModel>> getAll();
   Future<OrderModel?> getById(String id);
   Future<void> save(OrderModel model);

@@ -1,17 +1,18 @@
-import 'package:gestao_velas/src/feature/order/domain/datasorces/order_local_datasorce.dart';
-import 'package:gestao_velas/src/feature/order/domain/repositories/order_repositorie.dart';
-import 'package:gestao_velas/src/feature/order/domain/entities/order_entity.dart';
-import 'package:gestao_velas/src/feature/order/data/models/order_model.dart';
+import 'package:gestao_velas/src/feature/products/domain/repositories/product_repository.dart';
+import 'package:gestao_velas/src/feature/products/domain/datasources/product_datasource.dart';
+import 'package:gestao_velas/src/feature/products/domain/entities/product_entity.dart';
+import 'package:gestao_velas/src/feature/products/data/models/product_model.dart';
 import 'package:gestao_velas/src/core/error/exceptions.dart';
 import 'package:gestao_velas/src/core/error/failures.dart';
 import 'package:dartz/dartz.dart';
 
-class OrderRepositorieImpl implements OrderRepositorie {
-  final OrderLocalDatasorce datasource;
+class ProductRepositoryImpl implements ProductRepository {
+  final ProductDatasource datasource;
 
-  OrderRepositorieImpl({required this.datasource});
+  ProductRepositoryImpl({required this.datasource});
+
   @override
-  Future<Either<Failure, List<OrderEntity>>> getAll() async {
+  Future<Either<Failure, List<ProductEntity>>> getAll() async {
     try {
       final models = await datasource.getAll();
       return Right(models.map((m) => m.toEntity()).toList());
@@ -21,7 +22,7 @@ class OrderRepositorieImpl implements OrderRepositorie {
   }
 
   @override
-  Future<Either<Failure, OrderEntity?>> getById(String id) async {
+  Future<Either<Failure, ProductEntity?>> getById(String id) async {
     try {
       final model = await datasource.getById(id);
       return Right(model?.toEntity());
@@ -31,9 +32,9 @@ class OrderRepositorieImpl implements OrderRepositorie {
   }
 
   @override
-  Future<Either<Failure, void>> save(OrderEntity entity) async {
+  Future<Either<Failure, void>> save(ProductEntity entity) async {
     try {
-      await datasource.save(OrderModel.fromEntity(entity));
+      await datasource.save(ProductModel.fromEntity(entity));
       return const Right(null);
     } on CacheException catch (e) {
       return Left(CacheFailure(e.message));
@@ -51,9 +52,9 @@ class OrderRepositorieImpl implements OrderRepositorie {
   }
 
   @override
-  Future<Either<Failure, void>> update(OrderEntity entity) async {
+  Future<Either<Failure, void>> update(ProductEntity entity) async {
     try {
-      await datasource.update(OrderModel.fromEntity(entity));
+      await datasource.update(ProductModel.fromEntity(entity));
       return const Right(null);
     } on CacheException catch (e) {
       return Left(CacheFailure(e.message));
