@@ -47,4 +47,22 @@ class CustomerModel extends HiveObject {
     neighborhood: neighborhood,
     city: city,
   );
+
+  Map<String, dynamic> toMap() => {
+    'id': id,
+    'name': name,
+    'phone': phone,
+    'street': street,
+    'neighborhood': neighborhood,
+    'city': city,
+  };
+
+  factory CustomerModel.fromMap(Map<String, dynamic> map) => CustomerModel(
+    id: map['id'] as String,
+    name: map['name'] as String,
+    phone: map['phone'] as String,
+    street: map['street'] as String?,
+    neighborhood: map['neighborhood'] as String?,
+    city: map['city'] as String?,
+  );
 }

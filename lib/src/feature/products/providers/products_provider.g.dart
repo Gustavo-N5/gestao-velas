@@ -54,13 +54,13 @@ final class ProductRepositoryProvider
   }
 }
 
-String _$productRepositoryHash() => r'c00056162c84fd2416acf9ec0d45356dca891058';
+String _$productRepositoryHash() => r'e7bff8a7c76d9c0e2c63d5303fde3c86a41254d3';
 
 @ProviderFor(ProductsNotifier)
 final productsProvider = ProductsNotifierProvider._();
 
 final class ProductsNotifierProvider
-    extends $AsyncNotifierProvider<ProductsNotifier, List<ProductEntity>> {
+    extends $StreamNotifierProvider<ProductsNotifier, List<ProductEntity>> {
   ProductsNotifierProvider._()
     : super(
         from: null,
@@ -80,10 +80,10 @@ final class ProductsNotifierProvider
   ProductsNotifier create() => ProductsNotifier();
 }
 
-String _$productsNotifierHash() => r'59a3fa8faa76967be93216d22e8ea2398f2fc03d';
+String _$productsNotifierHash() => r'ce121b5ce704d3eb159babdc64a5d5b682832ee4';
 
-abstract class _$ProductsNotifier extends $AsyncNotifier<List<ProductEntity>> {
-  FutureOr<List<ProductEntity>> build();
+abstract class _$ProductsNotifier extends $StreamNotifier<List<ProductEntity>> {
+  Stream<List<ProductEntity>> build();
   @$mustCallSuper
   @override
   void runBuild() {

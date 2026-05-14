@@ -20,4 +20,18 @@ class OrderItemModel extends HiveObject {
     required this.unitPrice,
     required this.productName,
   });
+
+  Map<String, dynamic> toMap() => {
+    'productId': productId,
+    'productName': productName,
+    'unitPrice': unitPrice,
+    'quantity': quantity,
+  };
+
+  factory OrderItemModel.fromMap(Map<String, dynamic> map) => OrderItemModel(
+    productId: map['productId'] as String,
+    productName: map['productName'] as String,
+    unitPrice: (map['unitPrice'] as num).toDouble(),
+    quantity: map['quantity'] as int,
+  );
 }

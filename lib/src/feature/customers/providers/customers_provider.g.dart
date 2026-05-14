@@ -55,13 +55,13 @@ final class CustomerRepositoryProvider
 }
 
 String _$customerRepositoryHash() =>
-    r'ef89239fda9936ed35fe346aa8af4961984b64ea';
+    r'0e5c9f4535bd85584b7fbcba315b48ce71a3c9cd';
 
 @ProviderFor(CustomersNotifier)
 final customersProvider = CustomersNotifierProvider._();
 
 final class CustomersNotifierProvider
-    extends $AsyncNotifierProvider<CustomersNotifier, List<CustomerEntity>> {
+    extends $StreamNotifierProvider<CustomersNotifier, List<CustomerEntity>> {
   CustomersNotifierProvider._()
     : super(
         from: null,
@@ -81,11 +81,11 @@ final class CustomersNotifierProvider
   CustomersNotifier create() => CustomersNotifier();
 }
 
-String _$customersNotifierHash() => r'9b393b4d2f4c6e0dd0156bcc0d35330ff182a10c';
+String _$customersNotifierHash() => r'365ac12c9584a92ef4d14654d8b28ebab56d01da';
 
 abstract class _$CustomersNotifier
-    extends $AsyncNotifier<List<CustomerEntity>> {
-  FutureOr<List<CustomerEntity>> build();
+    extends $StreamNotifier<List<CustomerEntity>> {
+  Stream<List<CustomerEntity>> build();
   @$mustCallSuper
   @override
   void runBuild() {

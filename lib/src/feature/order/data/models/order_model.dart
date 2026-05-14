@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:gestao_velas/src/feature/customers/domain/entities/customer_entity.dart';
 import 'package:gestao_velas/src/feature/order/domain/entities/order_item_entity.dart';
 import 'package:gestao_velas/src/feature/products/domain/entities/product_entity.dart';
@@ -96,5 +97,33 @@ class OrderModel extends HiveObject {
     createdAt: createdAt,
     deliveryDate: deliveryDate,
     notes: notes,
+  );
+
+  Map<String, dynamic> toMap() => {
+    'id': id,
+    'customerId': customerId,
+    'customerName': customerName,
+    'customerPhone': customerPhone,
+    'items': items.map((i) => i.toMap()).toList(),
+    'status': status,
+    'paymentStatus': paymentStatus,
+    'createdAt': Timestamp.fromDate(createdAt),
+    'deliveryDate': deliveryDate != null ? Timestamp.fromDate(deliveryDate!) : null,
+    'notes': notes,
+  };
+
+  factory OrderModel.fromMap(Map<String, dynamic> map) => OrderModel(
+    id: map['id'] as String,
+    customerId: map['customerId'] as String,
+    customerName: map['customerName'] as String,
+    customerPhone: map['customerPhone'] as String,
+    items: (map['items'] as List)
+        .map((i) => OrderItemModel.fromMap(i as Map<String, dynamic>))
+        .toList(),
+    status: map['status'] as int,
+    paymentStatus: map['paymentStatus'] as int,
+    createdAt: (map['createdAt'] as Timestamp).toDate(),
+    deliveryDate: (map['deliveryDate'] as Timestamp?)?.toDate(),
+    notes: map['notes'] as String?,
   );
 }

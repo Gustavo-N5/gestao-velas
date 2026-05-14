@@ -31,4 +31,18 @@ class ProductModel extends HiveObject {
 
   ProductEntity toEntity() =>
       ProductEntity(id: id, name: name, price: price, description: description);
+
+  Map<String, dynamic> toMap() => {
+    'id': id,
+    'name': name,
+    'price': price,
+    'description': description,
+  };
+
+  factory ProductModel.fromMap(Map<String, dynamic> map) => ProductModel(
+    id: map['id'] as String,
+    name: map['name'] as String,
+    price: (map['price'] as num).toDouble(),
+    description: map['description'] as String?,
+  );
 }

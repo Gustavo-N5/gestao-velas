@@ -49,13 +49,13 @@ final class OrderRepositoryProvider
   }
 }
 
-String _$orderRepositoryHash() => r'aeb43ac78d230d4ea050cbe971e3265cb147ce97';
+String _$orderRepositoryHash() => r'275c4fd2f167864037ace210e90f4a47900adbd7';
 
 @ProviderFor(OrdersNotifier)
 final ordersProvider = OrdersNotifierProvider._();
 
 final class OrdersNotifierProvider
-    extends $AsyncNotifierProvider<OrdersNotifier, List<OrderEntity>> {
+    extends $StreamNotifierProvider<OrdersNotifier, List<OrderEntity>> {
   OrdersNotifierProvider._()
     : super(
         from: null,
@@ -75,10 +75,10 @@ final class OrdersNotifierProvider
   OrdersNotifier create() => OrdersNotifier();
 }
 
-String _$ordersNotifierHash() => r'a5a80d2b36c7096e68708fb892e496f479117e6d';
+String _$ordersNotifierHash() => r'2907c372fda1d9cf9e839c21b86f66aeb487a1cf';
 
-abstract class _$OrdersNotifier extends $AsyncNotifier<List<OrderEntity>> {
-  FutureOr<List<OrderEntity>> build();
+abstract class _$OrdersNotifier extends $StreamNotifier<List<OrderEntity>> {
+  Stream<List<OrderEntity>> build();
   @$mustCallSuper
   @override
   void runBuild() {
