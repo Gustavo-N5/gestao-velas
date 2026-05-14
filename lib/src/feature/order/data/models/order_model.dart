@@ -38,6 +38,11 @@ class OrderModel extends HiveObject {
   @HiveField(9)
   final String? notes;
 
+  // Metadado local — true = alterado offline, ainda não sincronizado com Firestore
+  // Não é armazenado no Firestore (ausente do toMap)
+  @HiveField(10)
+  final bool pendingSync;
+
   OrderModel({
     required this.id,
     required this.customerId,
@@ -49,9 +54,13 @@ class OrderModel extends HiveObject {
     required this.createdAt,
     this.deliveryDate,
     this.notes,
+    this.pendingSync = false,
   });
 
-  factory OrderModel.fromEntity(OrderEntity entity) => OrderModel(
+  factory OrderModel.fromEntity(
+    OrderEntity entity, {
+    bool pendingSync = true,
+  }) => OrderModel(
     id: entity.id,
     customerId: entity.customer.id,
     customerName: entity.customer.name,
@@ -71,6 +80,21 @@ class OrderModel extends HiveObject {
     createdAt: entity.createdAt,
     deliveryDate: entity.deliveryDate,
     notes: entity.notes,
+    pendingSync: pendingSync,
+  );
+
+  OrderModel copyWith({bool? pendingSync}) => OrderModel(
+    id: id,
+    customerId: customerId,
+    customerName: customerName,
+    customerPhone: customerPhone,
+    items: items,
+    status: status,
+    paymentStatus: paymentStatus,
+    createdAt: createdAt,
+    deliveryDate: deliveryDate,
+    notes: notes,
+    pendingSync: pendingSync ?? this.pendingSync,
   );
 
   OrderEntity toEntity() => OrderEntity(
@@ -110,6 +134,7 @@ class OrderModel extends HiveObject {
     'createdAt': Timestamp.fromDate(createdAt),
     'deliveryDate': deliveryDate != null ? Timestamp.fromDate(deliveryDate!) : null,
     'notes': notes,
+    // pendingSync é metadado local — não vai para o Firestore
   };
 
   factory OrderModel.fromMap(Map<String, dynamic> map) => OrderModel(
@@ -125,5 +150,6 @@ class OrderModel extends HiveObject {
     createdAt: (map['createdAt'] as Timestamp).toDate(),
     deliveryDate: (map['deliveryDate'] as Timestamp?)?.toDate(),
     notes: map['notes'] as String?,
+    pendingSync: false, // vindo do Firestore = já sincronizado
   );
 }

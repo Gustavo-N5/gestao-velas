@@ -18,13 +18,14 @@ class CustomerModelAdapter extends TypeAdapter<CustomerModel> {
       street: fields[3] as String?,
       neighborhood: fields[4] as String?,
       city: fields[5] as String?,
+      pendingSync: (fields[6] ?? false) as bool,
     );
   }
 
   @override
   void write(BinaryWriter writer, CustomerModel obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(7)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -36,7 +37,9 @@ class CustomerModelAdapter extends TypeAdapter<CustomerModel> {
       ..writeByte(4)
       ..write(obj.neighborhood)
       ..writeByte(5)
-      ..write(obj.city);
+      ..write(obj.city)
+      ..writeByte(6)
+      ..write(obj.pendingSync);
   }
 
   @override

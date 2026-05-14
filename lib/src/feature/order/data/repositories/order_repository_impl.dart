@@ -26,11 +26,34 @@ class OrderRepositoryImpl implements OrderRepository {
     if (!await ConnectivityService.isOnline()) return;
 
     try {
-      await for (final models in remote.watchAll()) {
-        for (final model in models) {
-          await local.save(model);
+      await for (final remoteModels in remote.watchAll()) {
+        final localModels = await local.getAll();
+        final localById = {for (final m in localModels) m.id: m};
+        final remoteIds = remoteModels.map((m) => m.id).toSet();
+
+        for (final model in remoteModels) {
+          final localVersion = localById[model.id];
+          if (localVersion == null || !localVersion.pendingSync) {
+            await local.save(model);
+          }
         }
-        yield models.map((m) => m.toEntity()).toList();
+
+        final result = <OrderModel>[];
+        for (final model in remoteModels) {
+          final localVersion = localById[model.id];
+          result.add(
+            (localVersion != null && localVersion.pendingSync)
+                ? localVersion
+                : model,
+          );
+        }
+        for (final model in localModels) {
+          if (!remoteIds.contains(model.id) && model.pendingSync) {
+            result.add(model);
+          }
+        }
+
+        yield result.map((m) => m.toEntity()).toList();
       }
     } catch (_) {}
   }
@@ -58,10 +81,11 @@ class OrderRepositoryImpl implements OrderRepository {
   @override
   Future<Either<Failure, void>> save(OrderEntity entity) async {
     try {
-      final model = OrderModel.fromEntity(entity);
+      final model = OrderModel.fromEntity(entity, pendingSync: true);
       await local.save(model);
       if (await ConnectivityService.isOnline()) {
         await remote.save(model);
+        await local.save(model.copyWith(pendingSync: false));
       }
       return const Right(null);
     } on CacheException catch (e) {
@@ -74,10 +98,11 @@ class OrderRepositoryImpl implements OrderRepository {
   @override
   Future<Either<Failure, void>> update(OrderEntity entity) async {
     try {
-      final model = OrderModel.fromEntity(entity);
+      final model = OrderModel.fromEntity(entity, pendingSync: true);
       await local.update(model);
       if (await ConnectivityService.isOnline()) {
         await remote.update(model);
+        await local.save(model.copyWith(pendingSync: false));
       }
       return const Right(null);
     } on CacheException catch (e) {
@@ -106,23 +131,26 @@ class OrderRepositoryImpl implements OrderRepository {
   Future<bool> syncFromRemote() async {
     if (!await ConnectivityService.isOnline()) return false;
     try {
-      final remoteModels = await remote.getAll();
+      bool changed = false;
       final localModels = await local.getAll();
-      final localIds = localModels.map((m) => m.id).toSet();
-      final remoteIds = remoteModels.map((m) => m.id).toSet();
+      final localById = {for (final m in localModels) m.id: m};
 
-      for (final model in remoteModels) {
-        await local.save(model);
+      for (final model in localModels.where((m) => m.pendingSync)) {
+        await remote.save(model);
+        await local.save(model.copyWith(pendingSync: false));
+        changed = true;
       }
 
-      for (final model in localModels) {
-        if (!remoteIds.contains(model.id)) {
-          await remote.save(model);
+      final remoteModels = await remote.getAll();
+      for (final model in remoteModels) {
+        final localVersion = localById[model.id];
+        if (localVersion == null || !localVersion.pendingSync) {
+          await local.save(model);
+          if (localVersion == null) changed = true;
         }
       }
 
-      return remoteModels.length != localIds.length ||
-          remoteIds.any((id) => !localIds.contains(id));
+      return changed;
     } catch (_) {
       return false;
     }

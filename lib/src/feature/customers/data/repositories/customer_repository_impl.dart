@@ -24,15 +24,40 @@ class CustomerRepositoryImpl implements CustomerRepository {
       yield [];
     }
 
-    // 2. Stream do Firestore — atualiza cache local a cada emissão
     if (!await ConnectivityService.isOnline()) return;
 
+    // 2. Stream do Firestore — merge respeitando registros pendentes locais
     try {
-      await for (final models in remote.watchAll()) {
-        for (final model in models) {
-          await local.save(model);
+      await for (final remoteModels in remote.watchAll()) {
+        final localModels = await local.getAll();
+        final localById = {for (final m in localModels) m.id: m};
+        final remoteIds = remoteModels.map((m) => m.id).toSet();
+
+        // Upsert remote → local, sem sobrescrever pendentes
+        for (final model in remoteModels) {
+          final localVersion = localById[model.id];
+          if (localVersion == null || !localVersion.pendingSync) {
+            await local.save(model);
+          }
         }
-        yield models.map((m) => m.toEntity()).toList();
+
+        // Monta lista final: preferência ao local pendente; inclui criações offline
+        final result = <CustomerModel>[];
+        for (final model in remoteModels) {
+          final localVersion = localById[model.id];
+          result.add(
+            (localVersion != null && localVersion.pendingSync)
+                ? localVersion
+                : model,
+          );
+        }
+        for (final model in localModels) {
+          if (!remoteIds.contains(model.id) && model.pendingSync) {
+            result.add(model);
+          }
+        }
+
+        yield result.map((m) => m.toEntity()).toList();
       }
     } catch (_) {}
   }
@@ -60,10 +85,11 @@ class CustomerRepositoryImpl implements CustomerRepository {
   @override
   Future<Either<Failure, void>> save(CustomerEntity entity) async {
     try {
-      final model = CustomerModel.fromEntity(entity);
+      final model = CustomerModel.fromEntity(entity, pendingSync: true);
       await local.save(model);
       if (await ConnectivityService.isOnline()) {
         await remote.save(model);
+        await local.save(model.copyWith(pendingSync: false));
       }
       return const Right(null);
     } on CacheException catch (e) {
@@ -76,10 +102,11 @@ class CustomerRepositoryImpl implements CustomerRepository {
   @override
   Future<Either<Failure, void>> update(CustomerEntity entity) async {
     try {
-      final model = CustomerModel.fromEntity(entity);
+      final model = CustomerModel.fromEntity(entity, pendingSync: true);
       await local.update(model);
       if (await ConnectivityService.isOnline()) {
         await remote.update(model);
+        await local.save(model.copyWith(pendingSync: false));
       }
       return const Right(null);
     } on CacheException catch (e) {
@@ -108,25 +135,28 @@ class CustomerRepositoryImpl implements CustomerRepository {
   Future<bool> syncFromRemote() async {
     if (!await ConnectivityService.isOnline()) return false;
     try {
-      final remoteModels = await remote.getAll();
+      bool changed = false;
       final localModels = await local.getAll();
-      final localIds = localModels.map((m) => m.id).toSet();
-      final remoteIds = remoteModels.map((m) => m.id).toSet();
+      final localById = {for (final m in localModels) m.id: m};
 
-      // Upsert remote → local
-      for (final model in remoteModels) {
-        await local.save(model);
+      // 1. Empurra registros pendentes ao remote e marca como sincronizados
+      for (final model in localModels.where((m) => m.pendingSync)) {
+        await remote.save(model); // set() = upsert no Firestore
+        await local.save(model.copyWith(pendingSync: false));
+        changed = true;
       }
 
-      // Push local-only records → remote (criados offline)
-      for (final model in localModels) {
-        if (!remoteIds.contains(model.id)) {
-          await remote.save(model);
+      // 2. Puxa remote → local (novos registros de outros dispositivos)
+      final remoteModels = await remote.getAll();
+      for (final model in remoteModels) {
+        final localVersion = localById[model.id];
+        if (localVersion == null || !localVersion.pendingSync) {
+          await local.save(model);
+          if (localVersion == null) changed = true;
         }
       }
 
-      return remoteModels.length != localIds.length ||
-          remoteIds.any((id) => !localIds.contains(id));
+      return changed;
     } catch (_) {
       return false;
     }

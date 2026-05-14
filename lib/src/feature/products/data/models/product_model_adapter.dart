@@ -16,13 +16,14 @@ class ProductModelAdapter extends TypeAdapter<ProductModel> {
       name: fields[1] as String,
       price: fields[2] as double,
       description: fields[3] as String?,
+      pendingSync: (fields[4] ?? false) as bool,
     );
   }
 
   @override
   void write(BinaryWriter writer, ProductModel obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -30,7 +31,9 @@ class ProductModelAdapter extends TypeAdapter<ProductModel> {
       ..writeByte(2)
       ..write(obj.price)
       ..writeByte(3)
-      ..write(obj.description);
+      ..write(obj.description)
+      ..writeByte(4)
+      ..write(obj.pendingSync);
   }
 
   @override

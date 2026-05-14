@@ -15,18 +15,36 @@ class ProductModel extends HiveObject {
   @HiveField(3)
   final String? description;
 
+  // Metadado local — true = alterado offline, ainda não sincronizado com Firestore
+  // Não é armazenado no Firestore (ausente do toMap)
+  @HiveField(4)
+  final bool pendingSync;
+
   ProductModel({
     required this.id,
     required this.name,
     required this.price,
     this.description,
+    this.pendingSync = false,
   });
 
-  factory ProductModel.fromEntity(ProductEntity entity) => ProductModel(
+  factory ProductModel.fromEntity(
+    ProductEntity entity, {
+    bool pendingSync = true,
+  }) => ProductModel(
     id: entity.id,
     name: entity.name,
     price: entity.price,
     description: entity.description,
+    pendingSync: pendingSync,
+  );
+
+  ProductModel copyWith({bool? pendingSync}) => ProductModel(
+    id: id,
+    name: name,
+    price: price,
+    description: description,
+    pendingSync: pendingSync ?? this.pendingSync,
   );
 
   ProductEntity toEntity() =>
@@ -37,6 +55,7 @@ class ProductModel extends HiveObject {
     'name': name,
     'price': price,
     'description': description,
+    // pendingSync é metadado local — não vai para o Firestore
   };
 
   factory ProductModel.fromMap(Map<String, dynamic> map) => ProductModel(
@@ -44,5 +63,6 @@ class ProductModel extends HiveObject {
     name: map['name'] as String,
     price: (map['price'] as num).toDouble(),
     description: map['description'] as String?,
+    pendingSync: false, // vindo do Firestore = já sincronizado
   );
 }
